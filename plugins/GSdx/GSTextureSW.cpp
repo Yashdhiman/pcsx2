@@ -23,12 +23,12 @@
 #include "GSTextureSW.h"
 
 GSTextureSW::GSTextureSW(int type, int width, int height)
-#ifdef _STD_ATOMIC_
-	: m_mapped(ATOMIC_FLAG_INIT)
-#else
-	: m_mapped(0)
-#endif
 {
+#ifdef _STD_ATOMIC_
+	m_mapped.clear();
+#else
+	m_mapped = 0;
+#endif
 	m_size = GSVector2i(width, height);
 	m_type = type;
 	m_format = 0;
