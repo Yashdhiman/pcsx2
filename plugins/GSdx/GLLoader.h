@@ -293,6 +293,10 @@ extern   PFNGLTEXSTORAGE2DPROC                  gl_TexStorage2D;
 // GL4.3
 extern   PFNGLCOPYIMAGESUBDATAPROC              gl_CopyImageSubData;
 extern   PFNGLINVALIDATETEXIMAGEPROC            gl_InvalidateTexImage;
+extern   PFNGLBINDVERTEXBUFFERPROC              gl_BindVertexBuffer;
+extern   PFNGLVERTEXATTRIBBINDINGPROC           gl_VertexAttribBinding;
+extern   PFNGLVERTEXATTRIBFORMATPROC            gl_VertexAttribFormat;
+extern   PFNGLVERTEXATTRIBIFORMATPROC           gl_VertexAttribIFormat;
 // GL4.4
 extern   PFNGLBUFFERSTORAGEPROC                 gl_BufferStorage;
 // GL_ARB_bindless_texture (GL5?)

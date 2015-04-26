@@ -106,8 +106,12 @@ void GSWndGL::PopulateGlFunction()
 	*(void**)&(gl_MemoryBarrier) = GetProcAddress("glMemoryBarrier", true);
 	*(void**)&(gl_TexStorage2D) = GetProcAddress("glTexStorage2D");
 	// GL4.3
-	*(void**)&(gl_CopyImageSubData) = GetProcAddress("glCopyImageSubData", true);
-	*(void**)&(gl_InvalidateTexImage) = GetProcAddress("glInvalidateTexImage", true);
+	*(void**)&(gl_CopyImageSubData)    = GetProcAddress("glCopyImageSubData", true);
+	*(void**)&(gl_InvalidateTexImage)  = GetProcAddress("glInvalidateTexImage", true);
+	*(void**)&(gl_BindVertexBuffer)    = GetProcAddress("glBindVertexBuffer");
+	*(void**)&(gl_VertexAttribBinding) = GetProcAddress("glVertexAttribBinding");
+	*(void**)&(gl_VertexAttribFormat)  = GetProcAddress("glVertexAttribFormat");
+	*(void**)&(gl_VertexAttribIFormat) = GetProcAddress("glVertexAttribIFormat");
 	// GL4.4
 	*(void**)&(gl_BufferStorage) = GetProcAddress("glBufferStorage", true);
 	// GL_ARB_bindless_texture (GL5?)

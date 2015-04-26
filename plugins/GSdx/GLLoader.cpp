@@ -101,6 +101,10 @@ PFNGLPROGRAMUNIFORM1IPROC              gl_ProgramUniform1i                  = NU
 // GL4.3
 PFNGLCOPYIMAGESUBDATAPROC              gl_CopyImageSubData                  = NULL;
 PFNGLINVALIDATETEXIMAGEPROC            gl_InvalidateTexImage                = NULL;
+PFNGLBINDVERTEXBUFFERPROC              gl_BindVertexBuffer                  = NULL;
+PFNGLVERTEXATTRIBBINDINGPROC           gl_VertexAttribBinding               = NULL;
+PFNGLVERTEXATTRIBFORMATPROC            gl_VertexAttribFormat                = NULL;
+PFNGLVERTEXATTRIBIFORMATPROC           gl_VertexAttribIFormat               = NULL;
 // GL4.2
 PFNGLBINDIMAGETEXTUREPROC              gl_BindImageTexture                  = NULL;
 PFNGLMEMORYBARRIERPROC                 gl_MemoryBarrier                     = NULL;
@@ -343,6 +347,7 @@ namespace GLLoader {
 	// Mandatory
 	bool found_GL_ARB_texture_storage = false;
 	bool found_GL_ARB_shading_language_420pack = false;
+	bool found_GL_ARB_vertex_attrib_binding = false; // It might requires an emulation layer for OSX
 
 	static bool status_and_override(bool& found, const std::string& name, bool mandatory = false)
 	{
@@ -455,11 +460,12 @@ namespace GLLoader {
 				if (ext.compare("GL_ARB_shading_language_420pack") == 0) found_GL_ARB_shading_language_420pack = true;
 				if (ext.compare("GL_ARB_texture_storage") == 0) found_GL_ARB_texture_storage = true;
 				// Only enable this extension on nvidia
-				// It is too costly on perf (big upscaling), code need to updated to reduce the number of draw stage
+				// It is too costly on perf (big upscaling), code need to be updated to reduce the number of draw stage
 				//if (nvidia_buggy_driver && ext.compare("GL_ARB_shader_image_load_store") == 0) found_GL_ARB_shader_image_load_store = true;
 				// GL4.3
 				if (ext.compare("GL_ARB_copy_image") == 0) found_GL_ARB_copy_image = true;
 				if (ext.compare("GL_ARB_explicit_uniform_location") == 0) found_GL_ARB_explicit_uniform_location = true;
+				if (ext.compare("GL_ARB_vertex_attrib_binding") == 0) found_GL_ARB_vertex_attrib_binding = true;
 				// GL4.4
 				if (ext.compare("GL_ARB_buffer_storage") == 0) found_GL_ARB_buffer_storage = true;
 				// FIXME: I have a crash when I hit pause (debug build)
@@ -492,6 +498,7 @@ namespace GLLoader {
 		// GL4.3
 		status &= status_and_override(found_GL_ARB_explicit_uniform_location,"GL_ARB_explicit_uniform_location");
 		status &= status_and_override(found_GL_ARB_copy_image, "GL_ARB_copy_image");
+		status &= status_and_override(found_GL_ARB_vertex_attrib_binding, "GL_ARB_vertex_attrib_binding", true);
 		// GL4.4
 		status &= status_and_override(found_GL_ARB_buffer_storage,"GL_ARB_buffer_storage");
 		status &= status_and_override(found_GL_ARB_bindless_texture,"GL_ARB_bindless_texture");
