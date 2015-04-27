@@ -52,6 +52,8 @@ GSDeviceOGL::GSDeviceOGL()
 	  , m_fbo(0)
 	  , m_fbo_read(0)
 	  , m_va(NULL)
+	  , m_va_tfx(NULL)
+	  , m_va_sr(NULL)
 	  , m_shader(NULL)
 {
 	memset(&m_merge_obj, 0, sizeof(m_merge_obj));
@@ -77,7 +79,8 @@ GSDeviceOGL::~GSDeviceOGL()
 		return;
 
 	// Clean vertex buffer state
-	delete (m_va);
+	delete (m_va_tfx);
+	delete (m_va_sr);
 
 	// Clean m_merge_obj
 	for (size_t i = 0; i < countof(m_merge_obj.ps); i++)
@@ -200,19 +203,24 @@ bool GSDeviceOGL::Create(GSWnd* wnd)
 	// ****************************************************************
 	// Vertex buffer state
 	// ****************************************************************
-	ASSERT(sizeof(GSVertexPT1) == sizeof(GSVertex));
+	GSInputLayoutOGL il_tfx[] =
+	{
+		{2 , GL_FLOAT          , GL_FALSE , sizeof(GSVertex) , (const GLvoid*)(0) }  ,
+		{4 , GL_UNSIGNED_BYTE  , GL_TRUE  , sizeof(GSVertex) , (const GLvoid*)(8) }  ,
+		{1 , GL_FLOAT          , GL_FALSE , sizeof(GSVertex) , (const GLvoid*)(12) } ,
+		{2 , GL_UNSIGNED_SHORT , GL_FALSE , sizeof(GSVertex) , (const GLvoid*)(16) } ,
+		{1 , GL_UNSIGNED_INT   , GL_FALSE , sizeof(GSVertex) , (const GLvoid*)(20) } ,
+		{2 , GL_UNSIGNED_SHORT , GL_FALSE , sizeof(GSVertex) , (const GLvoid*)(24) } ,
+		{1 , GL_UNSIGNED_BYTE  , GL_TRUE  , sizeof(GSVertex) , (const GLvoid*)(28) } ,
+	};
+	m_va_tfx = new GSVertexBufferStateOGL(sizeof(GSVertex), il_tfx, countof(il_tfx));
+
 	GSInputLayoutOGL il_convert[] =
 	{
 		{2 , GL_FLOAT          , GL_FALSE , sizeof(GSVertexPT1) , (const GLvoid*)(0) }  ,
 		{2 , GL_FLOAT          , GL_FALSE , sizeof(GSVertexPT1) , (const GLvoid*)(16) } ,
-		{4 , GL_UNSIGNED_BYTE  , GL_TRUE  , sizeof(GSVertex)    , (const GLvoid*)(8) }  ,
-		{1 , GL_FLOAT          , GL_FALSE , sizeof(GSVertex)    , (const GLvoid*)(12) } ,
-		{2 , GL_UNSIGNED_SHORT , GL_FALSE , sizeof(GSVertex)    , (const GLvoid*)(16) } ,
-		{1 , GL_UNSIGNED_INT   , GL_FALSE , sizeof(GSVertex)    , (const GLvoid*)(20) } ,
-		{2 , GL_UNSIGNED_SHORT , GL_FALSE , sizeof(GSVertex)    , (const GLvoid*)(24) } ,
-		{4 , GL_UNSIGNED_BYTE  , GL_TRUE  , sizeof(GSVertex)    , (const GLvoid*)(28) } , // Only 1 byte is useful but hardware unit only support 4B
 	};
-	m_va = new GSVertexBufferStateOGL(sizeof(GSVertexPT1), il_convert, countof(il_convert));
+	m_va_sr = new GSVertexBufferStateOGL(sizeof(GSVertexPT1), il_convert, countof(il_convert));
 
 	// ****************************************************************
 	// Pre Generate the different sampler object
@@ -819,6 +827,7 @@ void GSDeviceOGL::StretchRect(GSTexture* st, const GSVector4& sr, GSTexture* dt,
 		{GSVector4(right , bottom, 0.0f, 0.0f) , GSVector2(flip_sr.z , flip_sr.w)} ,
 	};
 
+	IASetVertexArray(m_va_sr);
 	IASetVertexBuffer(vertices, 4);
 	IASetPrimitiveTopology(GL_TRIANGLE_STRIP);
 
@@ -987,6 +996,7 @@ void GSDeviceOGL::SetupDATE(GSTexture* rt, GSTexture* ds, const GSVertexPT1* ver
 
 	// ia
 
+	IASetVertexArray(m_va_sr);
 	IASetVertexBuffer(vertices, 4);
 	IASetPrimitiveTopology(GL_TRIANGLE_STRIP);
 
@@ -1033,6 +1043,19 @@ void GSDeviceOGL::IASetVertexBuffer(const void* vertices, size_t count)
 void GSDeviceOGL::IASetIndexBuffer(const void* index, size_t count)
 {
 	m_va->UploadIB(index, count);
+}
+
+void GSDeviceOGL::IASetVertexArray(GSVertexBufferStateOGL* va)
+{
+	if (!va) {
+		// By default use tfx va. It avoid complex communication between GSRendererOGL and GSDeviceOGL
+		// Quick and dirty fix.
+		va = m_va_tfx;
+	}
+	if (m_va != va) {
+		va->bind();
+		m_va = va;
+	}
 }
 
 void GSDeviceOGL::IASetPrimitiveTopology(GLenum topology)

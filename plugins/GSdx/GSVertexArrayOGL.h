@@ -60,6 +60,8 @@ class GSBufferOGL {
 		// Warning m_limit is the number of object (not the size in Bytes)
 		m_limit = 2 * 2 * 1024 * 1024 / m_stride;
 
+		bind();
+
 		if (m_buffer_storage) {
 			for (size_t i = 0; i < 5; i++) {
 				m_fence[i] = 0;
@@ -68,7 +70,6 @@ class GSBufferOGL {
 			// TODO: if we do manually the synchronization, I'm not sure size is important. It worths to investigate it.
 			// => bigger buffer => less sync
 #ifndef ENABLE_GLES
-			bind();
 			// coherency will be done by flushing
 			const GLbitfield common_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
 			const GLbitfield map_flags = common_flags | GL_MAP_FLUSH_EXPLICIT_BIT;
@@ -82,6 +83,7 @@ class GSBufferOGL {
 			}
 #endif
 		} else {
+			allocate();
 			m_buffer_ptr = NULL;
 		}
 	}
@@ -292,11 +294,6 @@ public:
 		m_vb = new GSBufferOGL(GL_ARRAY_BUFFER, stride);
 		m_ib = new GSBufferOGL(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32));
 
-		m_vb->bind();
-		m_ib->bind();
-
-		m_vb->allocate();
-		m_ib->allocate();
 		set_internal_format(layout, layout_nbr);
 	}
 

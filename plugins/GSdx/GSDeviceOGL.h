@@ -494,7 +494,9 @@ class GSDeviceOGL : public GSDevice
 	GLuint m_fbo;				// frame buffer container
 	GLuint m_fbo_read;			// frame buffer container only for reading
 
-	GSVertexBufferStateOGL* m_va;// state of the vertex buffer/array
+	GSVertexBufferStateOGL* m_va;// state of current bind VAO
+	GSVertexBufferStateOGL* m_va_tfx;
+	GSVertexBufferStateOGL* m_va_sr;
 
 	struct {
 		GLuint ps[2];				 // program object
@@ -630,6 +632,7 @@ class GSDeviceOGL : public GSDevice
 	void IASetPrimitiveTopology(GLenum topology);
 	void IASetVertexBuffer(const void* vertices, size_t count);
 	void IASetIndexBuffer(const void* index, size_t count);
+	void IASetVertexArray(GSVertexBufferStateOGL* va = NULL);
 
 	void PSSetShaderResource(int i, GSTexture* sr);
 	void PSSetShaderResources(GSTexture* sr0, GSTexture* sr1);

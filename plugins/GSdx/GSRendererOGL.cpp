@@ -122,6 +122,7 @@ void GSRendererOGL::SetupIA()
 	if (!GLLoader::found_geometry_shader)
 		EmulateGS();
 
+	dev->IASetVertexArray();
 	dev->IASetVertexBuffer(m_vertex.buff, m_vertex.next);
 	dev->IASetIndexBuffer(m_index.buff, m_index.tail);
 
