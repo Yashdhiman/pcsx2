@@ -1139,19 +1139,21 @@ void GSDeviceOGL::OMSetRenderTargets(GSTexture* rt, GSTexture* ds, const GSVecto
 
 
 	GSVector2i size = rt ? rt->GetSize() : ds->GetSize();
-	if(GLState::viewport != size)
-	{
-		GLState::viewport = size;
+	//if(GLState::viewport != size)
+	//{
+	//	GLState::viewport = size;
+	//	glViewport(0, 0, size.x, size.y);
+	//}
 		glViewport(0, 0, size.x, size.y);
-	}
 
 	GSVector4i r = scissor ? *scissor : GSVector4i(size).zwxy();
 
-	if(!GLState::scissor.eq(r))
-	{
-		GLState::scissor = r;
+	//if(!GLState::scissor.eq(r))
+	//{
+	//	GLState::scissor = r;
+	//	glScissor( r.x, r.y, r.width(), r.height() );
+	//}
 		glScissor( r.x, r.y, r.width(), r.height() );
-	}
 }
 
 void GSDeviceOGL::CheckDebugLog()
