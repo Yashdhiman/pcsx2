@@ -195,7 +195,19 @@ void SysMtgsThread::OpenPlugin()
 	// Vsync on / off ?
 	if( renderswitch )
 	{
-		Console.Indent(2).WriteLn( "Toggling GSdx Hardware/Software renderer" );
+		if(Renderer=0)
+		Console.Indent(2).WriteLn( "Switched to D3D9 (software mode)" );
+		if(Renderer=1)
+		Console.Indent(2).WriteLn( "Switched to D3D9 (hardware mode)");
+		if(Renderer=3)
+		Console.Indent(2).WriteLn( "Switched to D3D11 (software mode)");
+		if(Renderer=4)
+		Console.Indent(2).WriteLn( "Switched to D3D11 (hardware mode)");
+		if(Renderer=12)
+		Console.Indent(2).WriteLn( "Switched to Opengl (software mode)");
+		if(Renderer=13)
+		Console.Indent(2).WriteLn( "Switched to Opengl (hardware mode)");
+		
 		if ( EmuConfig.GS.VsyncEnable )
 		{
 			// Better turn Vsync off now, as in most cases sw rendering is not fast enough to support a steady 60fps.
