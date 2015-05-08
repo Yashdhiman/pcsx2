@@ -195,17 +195,17 @@ void SysMtgsThread::OpenPlugin()
 	// Vsync on / off ?
 	if( renderswitch )
 	{
-		if(Renderer=0)
+		if(Renderer==0)
 		Console.Indent(2).WriteLn( "Switched to D3D9 (software mode)" );
-		if(Renderer=1)
+		if(Renderer==1)
 		Console.Indent(2).WriteLn( "Switched to D3D9 (hardware mode)");
-		if(Renderer=3)
+		if(Renderer==3)
 		Console.Indent(2).WriteLn( "Switched to D3D11 (software mode)");
-		if(Renderer=4)
+		if(Renderer==4)
 		Console.Indent(2).WriteLn( "Switched to D3D11 (hardware mode)");
-		if(Renderer=12)
+		if(Renderer==12)
 		Console.Indent(2).WriteLn( "Switched to Opengl (software mode)");
-		if(Renderer=13)
+		if(Renderer==13)
 		Console.Indent(2).WriteLn( "Switched to Opengl (hardware mode)");
 		
 		if ( EmuConfig.GS.VsyncEnable )
